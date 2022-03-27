@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">LuckyTrip</string>
+    <string name="lbl_somthing_went_wrong">Something went wrong</string>
+    <string name="action_done">Done</string>
+</resources>

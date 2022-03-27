@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="lucky_primary_color">#e16761</color>
+    <color name="lucky_primary_light_color">#ff988e</color>
+    <color name="lucky_primary_dark_color">#aa3737</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="background_fill">#F0F0EF</color>
+</resources>
