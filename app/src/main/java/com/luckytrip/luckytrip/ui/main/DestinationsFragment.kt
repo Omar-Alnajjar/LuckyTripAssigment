@@ -1,17 +1,16 @@
 package com.luckytrip.luckytrip.ui.main
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.luckytrip.luckytrip.BR
 import com.luckytrip.luckytrip.R
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,6 +22,7 @@ class DestinationsFragment : Fragment() {
     private val destinationsViewModel: DestinationsViewModel by activityViewModels()
 
     private lateinit var adapter: DestinationsAdapter
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +42,7 @@ class DestinationsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewDataBinding.setVariable(BR.viewModel, destinationsViewModel)
         setupRecyclerView()
+        setupSearchView()
     }
 
     private fun setupRecyclerView() {
@@ -51,6 +52,26 @@ class DestinationsFragment : Fragment() {
             adapter.notifyItemChanged(position)
         }
         rvDestinations.adapter = adapter
+    }
+
+    private fun setupSearchView() {
+        searchViewDestinations?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                searchText(newText)
+                return true
+            }
+        })
+
+    }
+
+    private fun searchText(searchText: String?) {
+        searchText?.let {
+            destinationsViewModel.handleSearch(it)
+        }
     }
 
     private fun observeChanges() {

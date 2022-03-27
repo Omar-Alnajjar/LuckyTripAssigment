@@ -6,5 +6,5 @@ import javax.inject.Inject
 class MainRepository @Inject constructor(
     private val apiHelper: ApiHelper
 ){
-    suspend fun getDestinations() = apiHelper.getDestinations()
+    suspend fun getDestinations(searchText: String?, searchType: String?) = apiHelper.getDestinations(searchText, searchType)
 }

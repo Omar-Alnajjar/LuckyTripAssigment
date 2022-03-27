@@ -8,6 +8,8 @@ import com.luckytrip.luckytrip.repository.MainRepository
 import com.luckytrip.luckytrip.utils.SingleLiveData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,28 +23,37 @@ class DestinationsViewModel @Inject constructor(
     var doneButtonEnabledObservable: ObservableField<Boolean> = ObservableField(false)
     var loadingObservable: ObservableField<Boolean> = ObservableField(false)
     var errorObservable: ObservableField<Boolean> = ObservableField(false)
+    var emptyObservable: ObservableField<Boolean> = ObservableField(false)
+    var sortObservable: ObservableField<Boolean> = ObservableField(false)
 
     private val selectedDestinations = mutableListOf<Destination>()
 
     private val backupDestinations: MutableList<Destination> = mutableListOf()
     private val destinations: MutableList<Destination> = mutableListOf()
 
-    var isSortApplied = false
+    private var searchJob: Job? = null
+
+    private var lastSearchText: String = ""
 
     init {
         getDestinations()
     }
 
-    fun getDestinations() {
+    private fun getDestinations(searchText: String? = null, searchType: String? = null) {
+        resetPreviousActions()
+        searchJob?.cancel()
         val exceptionHandler = CoroutineExceptionHandler { _, _ ->
             errorObservable.set(true)
             loadingObservable.set(false)
         }
-        viewModelScope.launch(exceptionHandler) {
+        searchJob = viewModelScope.launch(exceptionHandler) {
+            delay(SEARCH_START_DELAY_TIME)
+
             errorObservable.set(false)
             loadingObservable.set(true)
 
-            val newDestinations = mainRepository.getDestinations().destinations
+            val newDestinations =
+                mainRepository.getDestinations(searchText, searchType).destinations
 
             updateDestinations(newDestinations)
 
@@ -52,13 +63,30 @@ class DestinationsViewModel @Inject constructor(
         }
     }
 
+    private fun resetPreviousActions() {
+        selectedDestinations.clear()
+        doneButtonEnabledObservable.set(false)
+        sortObservable.set(false)
+    }
+
     private fun updateDestinations(newDestinations: List<Destination>?) {
         destinations.clear()
         backupDestinations.clear()
+
+        if(newDestinations.isNullOrEmpty()){
+            emptyObservable.set(true)
+        }else {
+            emptyObservable.set(false)
+        }
+
         newDestinations?.let {
             destinations.addAll(it)
             backupDestinations.addAll(it)
         }
+    }
+
+    fun tryAgainDestinations() {
+        getDestinations()
     }
 
     fun performDoneClick() {
@@ -66,7 +94,7 @@ class DestinationsViewModel @Inject constructor(
     }
 
     fun performSortClick() {
-        if(!isSortApplied) {
+        if (sortObservable.get() == false) {
             sortDestinations()
         } else {
             removeSortDestinations()
@@ -76,11 +104,12 @@ class DestinationsViewModel @Inject constructor(
 
 
     private fun sortDestinations() {
-        isSortApplied = true
+        sortObservable.set(true)
         destinations.sortBy { it.countryName }
     }
+
     private fun removeSortDestinations() {
-        isSortApplied = false
+        sortObservable.set(false)
         destinations.clear()
         destinations.addAll(backupDestinations)
     }
@@ -122,7 +151,24 @@ class DestinationsViewModel @Inject constructor(
         return destinations.getOrNull(position)
     }
 
+    fun handleSearch(searchText: String) {
+        if(searchText == lastSearchText){
+            return
+        }
+        lastSearchText = searchText
+
+        if (searchText.length >= START_SEARCH_INDEX) {
+            getDestinations(searchText, VALUE_SEARCH_TYPE)
+        } else {
+            searchJob?.cancel()
+            getDestinations()
+        }
+    }
+
     companion object {
         const val MIN_VALID_SELECTED_DESTINATIONS = 3
+        const val START_SEARCH_INDEX = 1
+        const val VALUE_SEARCH_TYPE = "city_or_country"
+        const val SEARCH_START_DELAY_TIME = 700L
     }
 }

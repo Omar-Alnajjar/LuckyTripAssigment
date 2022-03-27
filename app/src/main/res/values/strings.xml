@@ -4,8 +4,10 @@
     <string name="action_done">Done</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="lbl_selected_destinations_count">Selected Destinations Count :</string>
-    <string name="lbl_selected_destinations_names">Selected Destinations Names</string>
+    <string name="lbl_selected_destinations_count">Selected Destinations Count:</string>
+    <string name="lbl_selected_destinations_names">Selected Destinations Names:</string>
     <string name="title_destinations">Destinations</string>
     <string name="action_try_again">Try Again</string>
+    <string name="lbl_search">Search</string>
+    <string name="error_no_search_results">Sorry, There is no destinations matching your search</string>
 </resources>

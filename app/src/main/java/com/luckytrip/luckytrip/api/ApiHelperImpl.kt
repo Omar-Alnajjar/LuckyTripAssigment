@@ -5,6 +5,9 @@ import javax.inject.Inject
 
 class ApiHelperImpl @Inject constructor(
     private val apiService: ApiService
-):ApiHelper{
-    override suspend fun getDestinations(): DestinationsResponse = apiService.getDestinations()
+) : ApiHelper {
+    override suspend fun getDestinations(
+        searchText: String?,
+        searchType: String?
+    ): DestinationsResponse = apiService.getDestinations(searchText, searchType)
 }
