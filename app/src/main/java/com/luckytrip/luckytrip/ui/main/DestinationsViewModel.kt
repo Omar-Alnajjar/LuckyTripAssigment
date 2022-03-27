@@ -19,6 +19,8 @@ class DestinationsViewModel @Inject constructor(
     val destinationsViewState = SingleLiveData<DestinationsViewState>()
 
     var doneButtonEnabledObservable: ObservableField<Boolean> = ObservableField(false)
+    var loadingObservable: ObservableField<Boolean> = ObservableField(false)
+    var errorObservable: ObservableField<Boolean> = ObservableField(false)
 
     private val selectedDestinations = mutableListOf<Destination>()
 
@@ -28,12 +30,14 @@ class DestinationsViewModel @Inject constructor(
         getDestinations()
     }
 
-    private fun getDestinations() {
+    fun getDestinations() {
         val exceptionHandler = CoroutineExceptionHandler { _, _ ->
-            destinationsViewState.value = DestinationsViewState.Error
+            errorObservable.set(true)
+            loadingObservable.set(false)
         }
         viewModelScope.launch(exceptionHandler) {
-            destinationsViewState.value = DestinationsViewState.Loading
+            errorObservable.set(false)
+            loadingObservable.set(true)
 
             val newDestinations = mainRepository.getDestinations().destinations
 
@@ -41,6 +45,7 @@ class DestinationsViewModel @Inject constructor(
 
             destinationsViewState.value =
                 DestinationsViewState.DestinationsResponseData(destinations)
+            loadingObservable.set(false)
         }
     }
 

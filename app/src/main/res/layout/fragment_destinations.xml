@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -8,8 +10,7 @@
             type="com.luckytrip.luckytrip.ui.main.DestinationsViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/rootView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -19,8 +20,9 @@
             android:id="@+id/rvDestinations"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            handleVisibility="@{!viewModel.loadingObservable &amp;&amp; !viewModel.errorObservable}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toTopOf="@+id/button_world_learn_more"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -28,8 +30,9 @@
 
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_world_learn_more"
+            android:id="@+id/button_done"
             setOnClick="@{() -> viewModel.performDoneClick()}"
+            handleVisibility="@{!viewModel.loadingObservable &amp;&amp; !viewModel.errorObservable}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -48,12 +51,35 @@
 
         <ProgressBar
             android:id="@+id/progress"
+            handleVisibility="@{viewModel.loadingObservable}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_try_again"
+            handleVisibility="@{viewModel.errorObservable}"
+            setOnClick="@{() -> viewModel.getDestinations()}"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:text="@string/action_try_again"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:cornerRadius="32dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

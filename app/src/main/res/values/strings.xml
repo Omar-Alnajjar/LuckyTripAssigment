@@ -7,4 +7,5 @@
     <string name="lbl_selected_destinations_count">Selected Destinations Count :</string>
     <string name="lbl_selected_destinations_names">Selected Destinations Names</string>
     <string name="title_destinations">Destinations</string>
+    <string name="action_try_again">Try Again</string>
 </resources>

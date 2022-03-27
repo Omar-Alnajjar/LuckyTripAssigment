@@ -56,19 +56,7 @@ class DestinationsFragment : Fragment() {
         destinationsViewModel.destinationsViewState.observe(this, Observer {
             when (it) {
                 is DestinationsViewState.DestinationsResponseData -> {
-                    progress.visibility = View.GONE
-                    rvDestinations.visibility = View.VISIBLE
                     adapter.notifyDataSetChanged()
-                }
-                is DestinationsViewState.Loading -> {
-                    progress.visibility = View.VISIBLE
-                    rvDestinations.visibility = View.GONE
-                }
-                is DestinationsViewState.Error -> {
-                    progress.visibility = View.GONE
-                    rvDestinations.visibility = View.VISIBLE
-                    Snackbar.make(rootView, R.string.lbl_somthing_went_wrong, Snackbar.LENGTH_SHORT)
-                        .show()
                 }
                 is DestinationsViewState.DoneClick -> {
                     findNavController().navigate(
