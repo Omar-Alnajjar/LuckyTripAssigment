@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.luckytrip.luckytrip.ui.main.DestinationsViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.main.SelectionsFragment"
+        android:background="@color/background_fill">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_selected_destinations_count_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:gravity="start"
+            android:text="@string/lbl_selected_destinations_count"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_selected_destinations_count_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textAlignment="viewStart"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:text="@{viewModel.getSelectedDestinationsCount()}"
+            app:layout_constraintStart_toStartOf="@+id/tv_selected_destinations_count_title"
+            app:layout_constraintTop_toBottomOf="@+id/tv_selected_destinations_count_title"
+            tools:text="3" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_selected_destinations_names_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:gravity="start"
+            android:text="@string/lbl_selected_destinations_names"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_selected_destinations_count_value" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_selected_destinations_names_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textAlignment="viewStart"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:text="@{viewModel.getSelectedDestinationsNames()}"
+            app:layout_constraintStart_toStartOf="@+id/tv_selected_destinations_names_title"
+            app:layout_constraintTop_toBottomOf="@+id/tv_selected_destinations_names_title"
+            tools:text="Amman\nDubai\nLondon" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

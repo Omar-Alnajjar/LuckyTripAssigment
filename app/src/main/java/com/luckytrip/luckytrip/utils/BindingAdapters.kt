@@ -23,6 +23,9 @@ object BindingAdapters {
     @JvmStatic
     @BindingAdapter("setOnClick")
     fun View?.setOnClickListener(listener: View.OnClickListener?) {
-        listener?.onClick(this)
+        this?.setOnClickListener {
+            listener?.onClick(this)
+        }
+
     }
 }

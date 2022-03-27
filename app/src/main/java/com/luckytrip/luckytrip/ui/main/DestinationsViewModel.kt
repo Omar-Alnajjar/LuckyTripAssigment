@@ -1,13 +1,11 @@
 package com.luckytrip.luckytrip.ui.main
 
 import androidx.databinding.ObservableField
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.luckytrip.luckytrip.models.Destination
-import com.luckytrip.luckytrip.models.DestinationsResponse
 import com.luckytrip.luckytrip.repository.MainRepository
-import com.luckytrip.luckytrip.utils.Resource
+import com.luckytrip.luckytrip.utils.SingleLiveData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
@@ -18,13 +16,13 @@ class DestinationsViewModel @Inject constructor(
     private val mainRepository: MainRepository
 ) : ViewModel() {
 
-    val destinationsViewState = MutableLiveData<DestinationsViewState>()
+    val destinationsViewState = SingleLiveData<DestinationsViewState>()
 
     var doneButtonEnabledObservable: ObservableField<Boolean> = ObservableField(false)
 
     private val selectedDestinations = mutableListOf<Destination>()
 
-    private var destinationsResponse: DestinationsResponse? = null
+    private val destinations: MutableList<Destination> = mutableListOf()
 
     init {
         getDestinations()
@@ -37,9 +35,19 @@ class DestinationsViewModel @Inject constructor(
         viewModelScope.launch(exceptionHandler) {
             destinationsViewState.value = DestinationsViewState.Loading
 
-            destinationsResponse = mainRepository.getDestinations()
+            val newDestinations = mainRepository.getDestinations().destinations
+
+            updateDestinations(newDestinations)
+
             destinationsViewState.value =
-                DestinationsViewState.DestinationsResponseData(destinationsResponse?.destinations)
+                DestinationsViewState.DestinationsResponseData(destinations)
+        }
+    }
+
+    private fun updateDestinations(newDestinations: List<Destination>?) {
+        destinations.clear()
+        newDestinations?.let {
+            destinations.addAll(it)
         }
     }
 
@@ -48,8 +56,9 @@ class DestinationsViewModel @Inject constructor(
     }
 
     fun updateSelectedDestination(position: Int) {
-        destinationsResponse?.destinations?.get(position)?.let {
-            if(selectedDestinations.contains(it)){
+        destinations[position].selected = !destinations[position].selected
+        destinations[position].let {
+            if (selectedDestinations.contains(it)) {
                 selectedDestinations.remove(it)
             } else {
                 selectedDestinations.add(it)
@@ -65,6 +74,22 @@ class DestinationsViewModel @Inject constructor(
         } else {
             doneButtonEnabledObservable.set(false)
         }
+    }
+
+    fun getSelectedDestinationsCount() = selectedDestinations.size.toString()
+
+    fun getSelectedDestinationsNames(): String {
+        var names = ""
+        selectedDestinations.forEach {
+            names += "${it.city} \n"
+        }
+        return names
+    }
+
+    fun getItemsCount() = destinations.size
+
+    fun getItemAt(position: Int): Destination? {
+        return destinations.getOrNull(position)
     }
 
     companion object {

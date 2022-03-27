@@ -9,6 +9,7 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.luckytrip.luckytrip.BR
 import com.luckytrip.luckytrip.R
@@ -21,6 +22,11 @@ class DestinationsFragment : Fragment() {
     private val destinationsViewModel: DestinationsViewModel by activityViewModels()
 
     private lateinit var adapter: DestinationsAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        observeChanges()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,14 +41,13 @@ class DestinationsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewDataBinding.setVariable(BR.viewModel, destinationsViewModel)
         setupRecyclerView()
-        observeChanges()
     }
 
     private fun setupRecyclerView() {
-        adapter = DestinationsAdapter()
+        adapter = DestinationsAdapter(destinationsViewModel)
         adapter.itemClickListener = { _, position ->
-            adapter.setSelection(position)
             destinationsViewModel.updateSelectedDestination(position)
+            adapter.notifyItemChanged(position)
         }
         rvDestinations.adapter = adapter
     }
@@ -53,9 +58,7 @@ class DestinationsFragment : Fragment() {
                 is DestinationsViewState.DestinationsResponseData -> {
                     progress.visibility = View.GONE
                     rvDestinations.visibility = View.VISIBLE
-                    it.destinations?.let { res ->
-                        adapter.submitList(res)
-                    }
+                    adapter.notifyDataSetChanged()
                 }
                 is DestinationsViewState.Loading -> {
                     progress.visibility = View.VISIBLE
@@ -68,13 +71,11 @@ class DestinationsFragment : Fragment() {
                         .show()
                 }
                 is DestinationsViewState.DoneClick -> {
-                    //ToDo go to the next screen
+                    findNavController().navigate(
+                        DestinationsFragmentDirections.actionDestinationsFragmentToSelectionsFragment()
+                    )
                 }
             }
         })
-    }
-
-    companion object {
-        fun newInstance() = DestinationsFragment()
     }
 }

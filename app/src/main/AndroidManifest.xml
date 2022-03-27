@@ -13,7 +13,7 @@
         android:supportsRtl="false"
         android:theme="@style/Theme.LuckyTrip">
         <activity
-            android:name=".ui.main.MainActivity"
+            android:name=".ui.main.DestinationsActivity"
             android:exported="true"
             android:theme="@style/Theme.LuckyTrip">
             <intent-filter>
