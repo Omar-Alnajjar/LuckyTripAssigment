@@ -24,7 +24,10 @@ class DestinationsViewModel @Inject constructor(
 
     private val selectedDestinations = mutableListOf<Destination>()
 
+    private val backupDestinations: MutableList<Destination> = mutableListOf()
     private val destinations: MutableList<Destination> = mutableListOf()
+
+    var isSortApplied = false
 
     init {
         getDestinations()
@@ -51,13 +54,35 @@ class DestinationsViewModel @Inject constructor(
 
     private fun updateDestinations(newDestinations: List<Destination>?) {
         destinations.clear()
+        backupDestinations.clear()
         newDestinations?.let {
             destinations.addAll(it)
+            backupDestinations.addAll(it)
         }
     }
 
     fun performDoneClick() {
         destinationsViewState.value = DestinationsViewState.DoneClick
+    }
+
+    fun performSortClick() {
+        if(!isSortApplied) {
+            sortDestinations()
+        } else {
+            removeSortDestinations()
+        }
+        destinationsViewState.value = DestinationsViewState.SortClick
+    }
+
+
+    private fun sortDestinations() {
+        isSortApplied = true
+        destinations.sortBy { it.countryName }
+    }
+    private fun removeSortDestinations() {
+        isSortApplied = false
+        destinations.clear()
+        destinations.addAll(backupDestinations)
     }
 
     fun updateSelectedDestination(position: Int) {

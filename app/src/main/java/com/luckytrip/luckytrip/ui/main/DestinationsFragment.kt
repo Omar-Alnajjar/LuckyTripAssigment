@@ -1,5 +1,6 @@
 package com.luckytrip.luckytrip.ui.main
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.luckytrip.luckytrip.BR
 import com.luckytrip.luckytrip.R
 import dagger.hilt.android.AndroidEntryPoint
@@ -62,6 +63,9 @@ class DestinationsFragment : Fragment() {
                     findNavController().navigate(
                         DestinationsFragmentDirections.actionDestinationsFragmentToSelectionsFragment()
                     )
+                }
+                is DestinationsViewState.SortClick -> {
+                    adapter.notifyDataSetChanged()
                 }
             }
         })
