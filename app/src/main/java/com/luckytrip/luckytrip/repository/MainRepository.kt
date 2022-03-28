@@ -1,6 +1,6 @@
 package com.luckytrip.luckytrip.repository
 
-import com.luckytrip.luckytrip.api.ApiHelper
+import com.luckytrip.luckytrip.data.api.ApiHelper
 import javax.inject.Inject
 
 class MainRepository @Inject constructor(

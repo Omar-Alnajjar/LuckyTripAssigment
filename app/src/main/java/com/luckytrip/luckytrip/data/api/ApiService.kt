@@ -1,4 +1,4 @@
-package com.luckytrip.luckytrip.api
+package com.luckytrip.luckytrip.data.api
 
 import com.luckytrip.luckytrip.models.DestinationsResponse
 import retrofit2.http.GET

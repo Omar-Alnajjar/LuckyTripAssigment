@@ -3,6 +3,7 @@ package com.luckytrip.luckytrip.ui.main
 import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.luckytrip.luckytrip.data.prefs.AppSharedPreferences
 import com.luckytrip.luckytrip.models.Destination
 import com.luckytrip.luckytrip.repository.MainRepository
 import com.luckytrip.luckytrip.utils.SingleLiveData
@@ -15,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DestinationsViewModel @Inject constructor(
-    private val mainRepository: MainRepository
+    private val mainRepository: MainRepository,
+    private val appSharedPreferences: AppSharedPreferences
 ) : ViewModel() {
 
     val destinationsViewState = SingleLiveData<DestinationsViewState>()
@@ -57,10 +59,24 @@ class DestinationsViewModel @Inject constructor(
 
             updateDestinations(newDestinations)
 
+            checkLocalSelectedDestinations()
             destinationsViewState.value =
                 DestinationsViewState.DestinationsResponseData(destinations)
             loadingObservable.set(false)
         }
+    }
+
+    private fun checkLocalSelectedDestinations() {
+        val ids = appSharedPreferences.getSelectedDestinationsIds()
+        ids?.let {
+            destinations.forEach {
+                if(ids.contains(it.id.toString())){
+                    it.selected = true
+                    selectedDestinations.add((it))
+                }
+            }
+        }
+        validateSelectedDestinations()
     }
 
     private fun resetPreviousActions() {
@@ -73,9 +89,9 @@ class DestinationsViewModel @Inject constructor(
         destinations.clear()
         backupDestinations.clear()
 
-        if(newDestinations.isNullOrEmpty()){
+        if (newDestinations.isNullOrEmpty()) {
             emptyObservable.set(true)
-        }else {
+        } else {
             emptyObservable.set(false)
         }
 
@@ -90,7 +106,13 @@ class DestinationsViewModel @Inject constructor(
     }
 
     fun performDoneClick() {
+        saveSelectedDestinations()
         destinationsViewState.value = DestinationsViewState.DoneClick
+    }
+
+    private fun saveSelectedDestinations() {
+        val ids = selectedDestinations.map { it.id.toString() }.toSet()
+        appSharedPreferences.saveSelectedDestinationsIds(ids)
     }
 
     fun performSortClick() {
@@ -152,7 +174,7 @@ class DestinationsViewModel @Inject constructor(
     }
 
     fun handleSearch(searchText: String) {
-        if(searchText == lastSearchText){
+        if (searchText == lastSearchText) {
             return
         }
         lastSearchText = searchText
