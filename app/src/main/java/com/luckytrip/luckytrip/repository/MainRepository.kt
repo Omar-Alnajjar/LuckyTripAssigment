@@ -1,10 +1,8 @@
 package com.luckytrip.luckytrip.repository
 
-import com.luckytrip.luckytrip.data.api.ApiHelper
-import javax.inject.Inject
+import com.luckytrip.luckytrip.models.DestinationsResponse
 
-class MainRepository @Inject constructor(
-    private val apiHelper: ApiHelper
-){
-    suspend fun getDestinations(searchText: String?, searchType: String?) = apiHelper.getDestinations(searchText, searchType)
+
+interface MainRepository{
+    suspend fun getDestinations(searchText: String?, searchType: String?): DestinationsResponse
 }

@@ -6,6 +6,8 @@ import com.luckytrip.luckytrip.data.api.ApiHelper
 import com.luckytrip.luckytrip.data.api.ApiHelperImpl
 import com.luckytrip.luckytrip.data.api.ApiService
 import com.luckytrip.luckytrip.data.prefs.AppSharedPreferences
+import com.luckytrip.luckytrip.repository.MainRepository
+import com.luckytrip.luckytrip.repository.MainRepositoryImpl
 import com.luckytrip.luckytrip.utils.Constants
 import dagger.Module
 import dagger.Provides
@@ -55,6 +57,10 @@ object AppModule {
     @Provides
     @Singleton
     fun provideApiHelper(apiHelper: ApiHelperImpl): ApiHelper = apiHelper
+
+    @Provides
+    @Singleton
+    fun provideMainRepository(mainRepository: MainRepositoryImpl): MainRepository = mainRepository
 
     @Provides
     @Singleton

@@ -17,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DestinationsViewModel @Inject constructor(
     private val mainRepository: MainRepository,
-    private val appSharedPreferences: AppSharedPreferences
+    private val appSharedPreferences: AppSharedPreferences?
 ) : ViewModel() {
 
     val destinationsViewState = SingleLiveData<DestinationsViewState>()
@@ -67,7 +67,7 @@ class DestinationsViewModel @Inject constructor(
     }
 
     private fun checkLocalSelectedDestinations() {
-        val ids = appSharedPreferences.getSelectedDestinationsIds()
+        val ids = appSharedPreferences?.getSelectedDestinationsIds()
         ids?.let {
             destinations.forEach {
                 if(ids.contains(it.id.toString())){
@@ -112,7 +112,7 @@ class DestinationsViewModel @Inject constructor(
 
     private fun saveSelectedDestinations() {
         val ids = selectedDestinations.map { it.id.toString() }.toSet()
-        appSharedPreferences.saveSelectedDestinationsIds(ids)
+        appSharedPreferences?.saveSelectedDestinationsIds(ids)
     }
 
     fun performSortClick() {
